@@ -13,11 +13,6 @@ class JadwalPeriksa extends Model
         'hari',
         'jam_mulai',
         'jam_selesai',
-        'status',
-    ];
-
-    protected $casts = [
-        'status' => 'boolean',
     ];
 
     public function dokter()

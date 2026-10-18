@@ -15,98 +15,80 @@
 
     {{-- Card --}}
     <div class="card bg-base-100 shadow-md rounded-2xl border border-slate-200">
-
         <div class="card-body p-8">
-
-            <form action="{{ route('jadwal-periksa.update', $jadwal->id) }}" method="POST" novalidate>
+            <form action="{{ route('jadwal-periksa.update', $jadwalPeriksa->id) }}" method="POST">
                 @csrf
                 @method('PUT')
 
                 {{-- Hari --}}
-                <div class="mb-6">
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">
-                        Hari <span class="text-red-500">*</span>
+                <div class="form-control mb-6">
+                    <label class="label pb-1">
+                        <span class="text-sm font-semibold text-gray-700">
+                            Hari <span class="text-red-500">*</span>
+                        </span>
                     </label>
 
-                    <select name="hari"
-                        class="w-full px-4 py-2 rounded-lg border-2 border-slate-300 bg-white
-                               focus:border-primary focus:outline-none
-                               @error('hari') border-red-500 @enderror">
-                        <option value="">-- Pilih Hari --</option>
-                        @foreach($hari as $h)
-                        <option value="{{ $h }}" @selected(old('hari', $jadwal->hari) == $h)>{{ $h }}</option>
+                    <select name="hari" id="hari"
+                        class="select select-bordered border-2 px-4 w-full rounded-lg @error('hari') select-error @enderror"
+                        required>
+                        <option value="">Pilih Hari</option>
+                        @foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'] as $day)
+                            <option value="{{ $day }}" {{ (old('hari') ?? $jadwalPeriksa->hari) == $day ? 'selected' : '' }}>
+                                {{ $day }}
+                            </option>
                         @endforeach
                     </select>
 
                     @error('hari')
-                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                    <span class="text-xs text-red-500 mt-1">{{ $message }}</span>
                     @enderror
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    {{-- Jam Mulai --}}
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1">
+                {{-- Jam Mulai --}}
+                <div class="form-control mb-6">
+                    <label class="label pb-1">
+                        <span class="text-sm font-semibold text-gray-700">
                             Jam Mulai <span class="text-red-500">*</span>
-                        </label>
-
-                        <input type="time" name="jam_mulai" value="{{ old('jam_mulai', \Carbon\Carbon::parse($jadwal->jam_mulai)->format('H:i')) }}"
-                            class="w-full px-4 py-2 rounded-lg border-2 border-slate-300 
-                                   focus:border-primary focus:outline-none
-                                   @error('jam_mulai') border-red-500 @enderror">
-
-                        @error('jam_mulai')
-                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    {{-- Jam Selesai --}}
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1">
-                            Jam Selesai <span class="text-red-500">*</span>
-                        </label>
-
-                        <input type="time" name="jam_selesai" value="{{ old('jam_selesai', \Carbon\Carbon::parse($jadwal->jam_selesai)->format('H:i')) }}"
-                            class="w-full px-4 py-2 rounded-lg border-2 border-slate-300 
-                                   focus:border-primary focus:outline-none
-                                   @error('jam_selesai') border-red-500 @enderror">
-
-                        @error('jam_selesai')
-                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-                </div>
-
-                {{-- Status --}}
-                <div class="mb-6">
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">
-                        Status <span class="text-red-500">*</span>
+                        </span>
                     </label>
 
-                    <select name="status"
-                        class="w-full px-4 py-2 rounded-lg border-2 border-slate-300 bg-white
-                               focus:border-primary focus:outline-none
-                               @error('status') border-red-500 @enderror">
-                        <option value="1" @selected(old('status', (int) $jadwal->status) == 1)>Aktif</option>
-                        <option value="0" @selected(old('status', (int) $jadwal->status) == 0)>Nonaktif</option>
-                    </select>
+                    <input type="time" name="jam_mulai" id="jam_mulai"
+                        value="{{ old('jam_mulai') ?? $jadwalPeriksa->jam_mulai }}"
+                        class="input input-bordered border-2 px-4 w-full rounded-lg @error('jam_mulai') input-error @enderror"
+                        required>
 
-                    @error('status')
-                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                    @error('jam_mulai')
+                    <span class="text-xs text-red-500 mt-1">{{ $message }}</span>
                     @enderror
                 </div>
 
-                {{-- Button --}}
-                <div class="flex gap-3 mt-8">
-                    <button type="submit"
-                        class="px-6 py-2.5 rounded-lg bg-primary hover:bg-primary/90 
-                               text-white font-semibold text-sm transition">
-                        <i class="fas fa-save mr-1"></i> Simpan
+                {{-- Jam Selesai --}}
+                <div class="form-control mb-8">
+                    <label class="label pb-1">
+                        <span class="text-sm font-semibold text-gray-700">
+                            Jam Selesai <span class="text-red-500">*</span>
+                        </span>
+                    </label>
+
+                    <input type="time" name="jam_selesai" id="jam_selesai"
+                        value="{{ old('jam_selesai') ?? $jadwalPeriksa->jam_selesai }}"
+                        class="input input-bordered border-2 px-4 w-full rounded-lg @error('jam_selesai') input-error @enderror"
+                        required>
+
+                    @error('jam_selesai')
+                    <span class="text-xs text-red-500 mt-1">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                {{-- Buttons --}}
+                <div class="flex gap-3">
+                    <button type="submit" class="btn bg-[#2d4499] hover:bg-[#1e2d6b]
+                                   text-white border-none rounded-lg px-6">
+                        <i class="fas fa-save"></i>
+                        Simpan
                     </button>
 
-                    <a href="{{ route('jadwal-periksa.index') }}"
-                        class="px-6 py-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 
-                               text-slate-600 font-semibold text-sm transition">
+                    <a href="{{ route('jadwal-periksa.index') }}" class="btn btn-ghost bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-lg px-6">
                         Batal
                     </a>
                 </div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Pasien;
 
+use App\Events\AntrianUpdated;
 use App\Http\Controllers\Controller;
 use App\Models\DaftarPoli;
 use App\Models\JadwalPeriksa;
@@ -33,14 +34,27 @@ class PoliController extends Controller
             'id_pasien' => 'required|exists:users,id',
         ]);
 
+        // Pasien tidak boleh punya dua antrian aktif sekaligus
+        $punyaAntrianAktif = DaftarPoli::where('id_pasien', Auth::id())
+            ->whereDoesntHave('periksas')
+            ->exists();
+
+        if ($punyaAntrianAktif) {
+            return redirect()
+                ->back()
+                ->with('error', 'Anda masih memiliki antrian aktif. Daftar kembali setelah pemeriksaan selesai.');
+        }
+
         $jumlahSudahDaftar = DaftarPoli::where('id_jadwal', $request->id_jadwal)->count();
 
         DaftarPoli::create([
-            'id_pasien' => $request->id_pasien,
+            'id_pasien' => Auth::id(),
             'id_jadwal' => $request->id_jadwal,
             'keluhan' => $request->keluhan,
             'no_antrian' => $jumlahSudahDaftar + 1,
         ]);
+
+        AntrianUpdated::dispatch($request->id_jadwal);
 
         return redirect()
             ->back()

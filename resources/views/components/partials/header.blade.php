@@ -16,6 +16,17 @@
         </div>
     </div>
 
+    {{-- Notifikasi --}}
+    @php($belumDibaca = auth()->user()->unreadNotifications()->count())
+    <a href="{{ route('notifikasi.index') }}" class="btn btn-square btn-ghost relative">
+        <i class="fas fa-bell w-5 h-5"></i>
+        @if($belumDibaca > 0)
+        <span class="absolute top-1 right-1 min-w-5 h-5 px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">
+            {{ $belumDibaca }}
+        </span>
+        @endif
+    </a>
+
     {{-- Fullscreen --}}
     <button onclick="toggleFullscreen()" class="btn btn-square btn-ghost">
         <i id="fsIcon" class="fas fa-expand w-5 h-5"></i>

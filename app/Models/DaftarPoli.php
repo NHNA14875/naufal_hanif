@@ -29,4 +29,13 @@ class DaftarPoli extends Model
     {
         return $this->hasMany(Periksa::class, 'id_daftar_poli');
     }
+
+    // Nomor antrian yang sedang dilayani pada sebuah jadwal
+    // (nomor terkecil yang belum diperiksa)
+    public static function nomorDilayani($idJadwal)
+    {
+        return static::where('id_jadwal', $idJadwal)
+            ->whereDoesntHave('periksas')
+            ->min('no_antrian');
+    }
 }

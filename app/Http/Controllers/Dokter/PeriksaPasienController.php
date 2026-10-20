@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dokter;
 
+use App\Events\AntrianUpdated;
 use App\Http\Controllers\Controller;
 use App\Models\DaftarPoli;
 use App\Models\DetailPeriksa;
@@ -57,6 +58,8 @@ class PeriksaPasienController extends Controller
                 ]);
             }
         }
+
+        AntrianUpdated::dispatch(DaftarPoli::find($request->id_daftar_poli)->id_jadwal);
 
         return redirect()
             ->route('periksa-pasien.index')
